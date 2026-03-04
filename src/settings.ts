@@ -8,8 +8,7 @@ export interface BrainSettings {
 	googleApiKey: string;
 	googleModel: string;
 	azureApiKey: string;
-	azureResourceName: string;
-	azureDeploymentName: string;
+	azureBaseUrl: string;
 	customBaseUrl: string;
 	customApiKey: string;
 	customModel: string;
@@ -22,8 +21,7 @@ export const DEFAULT_SETTINGS: BrainSettings = {
 	googleApiKey: '',
 	googleModel: 'gemini-1.5-pro',
 	azureApiKey: '',
-	azureResourceName: '',
-	azureDeploymentName: '',
+	azureBaseUrl: '',
 	customBaseUrl: '',
 	customApiKey: '',
 	customModel: ''
@@ -77,10 +75,13 @@ export class BrainSettingTab extends PluginSettingTab {
 				.setName('Model')
 				.setDesc('Select the openai model to use')
 				.addDropdown(dropdown => {
-					dropdown.addOption('gpt-4o', 'Gpt-4o');
-					dropdown.addOption('gpt-4o-mini', 'Gpt-4o-mini');
-					dropdown.addOption('gpt-4-turbo', 'Gpt-4-turbo');
-					dropdown.addOption('gpt-3.5-turbo', 'Gpt-3.5-turbo');
+					dropdown.addOption('gpt-5.2-pro', 'Gpt-5.2 pro');
+					dropdown.addOption('gpt-5.2', 'Gpt-5.2');
+					dropdown.addOption('gpt-5.1', 'Gpt-5.1');
+					dropdown.addOption('gpt-5-pro', 'Gpt-5 pro');
+					dropdown.addOption('gpt-5-nano', 'Gpt-5 nano');
+					dropdown.addOption('gpt-5-mini', 'Gpt-5 mini');
+					dropdown.addOption('gpt-4o-mini', 'Gpt-4o mini');
 					dropdown.setValue(this.plugin.settings.openaiModel)
 						.onChange(async (value) => {
 							this.plugin.settings.openaiModel = value;
@@ -105,11 +106,13 @@ export class BrainSettingTab extends PluginSettingTab {
 				.setName('Model')
 				.setDesc('Select your gemini model')
 				.addDropdown(dropdown => {
-					dropdown.addOption('gemini-2.5-flash', 'Gemini 2.5 flash');
+					dropdown.addOption('gemini-3.1-pro', 'Gemini 3.1 pro');
+					dropdown.addOption('gemini-3.1-flash-lite', 'Gemini 3.1 flash lite');
+					dropdown.addOption('gemini-3.0-pro', 'Gemini 3.0 pro');
+					dropdown.addOption('gemini-3.0-flash', 'Gemini 3.0 flash');
 					dropdown.addOption('gemini-2.5-pro', 'Gemini 2.5 pro');
-					dropdown.addOption('gemini-2.0-flash', 'Gemini 2.0 flash');
-					dropdown.addOption('gemini-1.5-pro', 'Gemini 1.5 pro');
-					dropdown.addOption('gemini-1.5-flash', 'Gemini 1.5 flash');
+					dropdown.addOption('gemini-2.5-flash', 'Gemini 2.5 flash');
+					dropdown.addOption('gemini-2.5-flash-lite', 'Gemini 2.5 flash lite');
 					dropdown.setValue(this.plugin.settings.googleModel)
 						.onChange(async (value) => {
 							this.plugin.settings.googleModel = value;
@@ -118,13 +121,13 @@ export class BrainSettingTab extends PluginSettingTab {
 				});
 		} else if (this.plugin.settings.provider === 'AzureOpenAI') {
 			new Setting(containerEl)
-				.setName('Resource name')
-				.setDesc('Enter your azure openai resource name')
+				.setName('Base URL')
+				.setDesc('Enter your base URL')
 				.addText(text => text
-					.setPlaceholder('Resource name')
-					.setValue(this.plugin.settings.azureResourceName)
+					.setPlaceholder('https://api.example.com')
+					.setValue(this.plugin.settings.azureBaseUrl)
 					.onChange(async (value) => {
-						this.plugin.settings.azureResourceName = value;
+						this.plugin.settings.azureBaseUrl = value;
 						await this.plugin.saveSettings();
 					}));
 
@@ -140,17 +143,6 @@ export class BrainSettingTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 						});
 				});
-
-			new Setting(containerEl)
-				.setName('Deployment name')
-				.setDesc('Enter the deployment name for the model')
-				.addText(text => text
-					.setPlaceholder('Deployment name')
-					.setValue(this.plugin.settings.azureDeploymentName)
-					.onChange(async (value) => {
-						this.plugin.settings.azureDeploymentName = value;
-						await this.plugin.saveSettings();
-					}));
 		} else if (this.plugin.settings.provider === 'Custom') {
 			new Setting(containerEl)
 				.setName('Base URL')
