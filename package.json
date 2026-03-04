@@ -24,6 +24,12 @@
 		"jiti": "2.6.1"
 	},
 	"dependencies": {
-		"obsidian": "latest"
+		"obsidian": "latest",
+		"mastra": "latest",
+		"@mastra/core": "latest",
+		"@ai-sdk/google": "latest",
+		"@ai-sdk/openai": "latest",
+		"@ai-sdk/azure": "latest",
+		"zod": "latest"
 	}
 }

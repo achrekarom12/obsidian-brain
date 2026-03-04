@@ -1,10 +1,15 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
+import BrainPlugin from "./main";
+import { createBrainAgent } from "./mastra/agents";
 
 export const VIEW_TYPE_CHAT = "brain-chat-view";
 
 export class BrainView extends ItemView {
-    constructor(leaf: WorkspaceLeaf) {
+    plugin: BrainPlugin;
+
+    constructor(leaf: WorkspaceLeaf, plugin: BrainPlugin) {
         super(leaf);
+        this.plugin = plugin;
     }
 
     getViewType() {
@@ -42,27 +47,44 @@ export class BrainView extends ItemView {
 
         const appendMessage = (sender: "user" | "ai", text: string) => {
             const msgWrap = chatHistory.createDiv({ cls: `brain-chat-msg-wrap ${sender}` });
-            msgWrap.createDiv({ cls: "brain-chat-msg-text", text: text });
+            const msgText = msgWrap.createDiv({ cls: "brain-chat-msg-text", text: text });
             chatHistory.scrollTo(0, chatHistory.scrollHeight);
+            return msgText;
         };
 
-        const handleSend = () => {
+        const handleSend = async () => {
             const query = inputField.value.trim();
             if (query) {
                 appendMessage("user", query);
                 inputField.value = "";
 
-                // Simulate AI response
-                setTimeout(() => {
-                    appendMessage("ai", "Gotcha");
-                }, 500);
+                const aiMsgText = appendMessage("ai", "...");
+                let fullText = "";
+
+                try {
+                    const agent = createBrainAgent(this.plugin.settings);
+                    const stream = await agent.stream(query);
+
+                    aiMsgText.setText("");
+
+                    for await (const chunk of stream.textStream) {
+                        fullText += chunk;
+                        aiMsgText.setText(fullText);
+                        chatHistory.scrollTo(0, chatHistory.scrollHeight);
+                    }
+                } catch (error) {
+                    console.error("Mastra error:", error);
+                    aiMsgText.setText("Error: " + (error instanceof Error ? error.message : String(error)));
+                }
             }
         };
 
-        sendButton.addEventListener("click", handleSend);
+        sendButton.addEventListener("click", () => {
+            void handleSend();
+        });
         inputField.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                handleSend();
+                void handleSend();
             }
         });
     }

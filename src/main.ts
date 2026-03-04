@@ -1,6 +1,7 @@
 import { App, Editor, MarkdownView, Modal, Plugin, WorkspaceLeaf } from 'obsidian';
 import { DEFAULT_SETTINGS, BrainSettings, BrainSettingTab } from "./settings";
 import { BrainView, VIEW_TYPE_CHAT } from './view';
+import { Logger } from './logger';
 
 // Remember to rename these classes and interfaces!
 
@@ -8,11 +9,12 @@ export default class BrainPlugin extends Plugin {
 	settings: BrainSettings;
 
 	async onload() {
+		Logger.init(this);
 		await this.loadSettings();
 
 		this.registerView(
 			VIEW_TYPE_CHAT,
-			(leaf) => new BrainView(leaf)
+			(leaf) => new BrainView(leaf, this)
 		);
 
 		this.addRibbonIcon('brain', 'Brain', () => {
