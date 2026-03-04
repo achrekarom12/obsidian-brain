@@ -1,9 +1,9 @@
 {
-	"id": "hello-world",
-	"name": "Hello World",
-	"version": "1.0.0",
+	"id": "obsidian-brain",
+	"name": "Obsidian Brain",
+	"version": "0.0.1",
 	"minAppVersion": "0.15.0",
-	"description": "A simple plugin that greets you with a message.",
+	"description": "A plugin to help your Obsidian vault act like your second brain.",
 	"author": "Om Achrekar",
 	"authorUrl": "https://itsom.dev",
 	"fundingUrl": "https://itsom.dev",

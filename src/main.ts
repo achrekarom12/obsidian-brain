@@ -1,16 +1,16 @@
-import {App, Editor, MarkdownView, Modal, Notice, Plugin} from 'obsidian';
-import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
+import { App, Editor, MarkdownView, Modal, Notice, Plugin } from 'obsidian';
+import { DEFAULT_SETTINGS, BrainSettings, BrainSettingTab } from "./settings";
 
 // Remember to rename these classes and interfaces!
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class BrainPlugin extends Plugin {
+	settings: BrainSettings;
 
 	async onload() {
 		await this.loadSettings();
 
-		this.addRibbonIcon('dice', 'Greet', () => {
-			new Notice('Hello, world!');
+		this.addRibbonIcon('brain', 'Brain', () => {
+			new Notice('Braining...');
 		});
 
 		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
@@ -55,13 +55,13 @@ export default class MyPlugin extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new BrainSettingTab(this.app, this));
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			new Notice("Click");
-		});
+		// this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
+		// 	new Notice("Click");
+		// });
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
@@ -72,7 +72,7 @@ export default class MyPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<MyPluginSettings>);
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<BrainSettings>);
 	}
 
 	async saveSettings() {
@@ -86,12 +86,12 @@ class SampleModal extends Modal {
 	}
 
 	onOpen() {
-		let {contentEl} = this;
+		let { contentEl } = this;
 		contentEl.setText('Woah!');
 	}
 
 	onClose() {
-		const {contentEl} = this;
+		const { contentEl } = this;
 		contentEl.empty();
 	}
 }
