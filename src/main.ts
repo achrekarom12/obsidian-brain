@@ -1,5 +1,6 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Plugin, WorkspaceLeaf } from 'obsidian';
 import { DEFAULT_SETTINGS, BrainSettings, BrainSettingTab } from "./settings";
+import { BrainView, VIEW_TYPE_CHAT } from './view';
 
 // Remember to rename these classes and interfaces!
 
@@ -9,13 +10,27 @@ export default class BrainPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
+		this.registerView(
+			VIEW_TYPE_CHAT,
+			(leaf) => new BrainView(leaf)
+		);
+
 		this.addRibbonIcon('brain', 'Brain', () => {
-			new Notice('Braining...');
+			void this.activateView();
 		});
 
 		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
 		const statusBarItemEl = this.addStatusBarItem();
 		statusBarItemEl.setText('Status bar text');
+
+		// This adds a simple command that can be triggered anywhere
+		this.addCommand({
+			id: 'open-brain-chat',
+			name: 'Open brain chat',
+			callback: () => {
+				void this.activateView();
+			}
+		});
 
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
@@ -63,6 +78,28 @@ export default class BrainPlugin extends Plugin {
 		// 	new Notice("Click");
 		// });
 
+	}
+
+	async activateView() {
+		const { workspace } = this.app;
+
+		let leaf: WorkspaceLeaf | undefined;
+		const leaves = workspace.getLeavesOfType(VIEW_TYPE_CHAT);
+
+		if (leaves.length > 0) {
+			// A leaf with our view already exists, use that
+			leaf = leaves[0];
+		} else {
+			// Our view could not be found in the workspace, create a new leaf
+			// in the right sidebar
+			leaf = workspace.getRightLeaf(false) ?? undefined;
+			await leaf?.setViewState({ type: VIEW_TYPE_CHAT, active: true });
+		}
+
+		// "Reveal" the leaf in case it is in a collapsed sidebar
+		if (leaf) {
+			await this.app.workspace.revealLeaf(leaf);
+		}
 	}
 
 	onunload() {
