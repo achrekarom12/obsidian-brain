@@ -7,10 +7,12 @@ export const VIEW_TYPE_CHAT = "brain-chat-view";
 export class BrainView extends ItemView {
     plugin: BrainPlugin;
     chatHistory: HTMLDivElement;
+    threadId: string;
 
     constructor(leaf: WorkspaceLeaf, plugin: BrainPlugin) {
         super(leaf);
         this.plugin = plugin;
+        this.threadId = crypto.randomUUID();
     }
 
     getViewType() {
@@ -68,8 +70,13 @@ export class BrainView extends ItemView {
                 let fullText = "";
 
                 try {
-                    const agent = createBrainAgent(this.plugin.settings);
-                    const stream = await agent.stream(query);
+                    const agent = await createBrainAgent(this.plugin.settings);
+                    const stream = await agent.stream(query, {
+                        memory: {
+                            thread: this.threadId,
+                            resource: "obsidian-user",
+                        },
+                    });
 
                     aiMsgText.setText("");
 
@@ -103,5 +110,6 @@ export class BrainView extends ItemView {
         if (this.chatHistory) {
             this.chatHistory.empty();
         }
+        this.threadId = crypto.randomUUID();
     }
 }

@@ -35,3 +35,7 @@ data.json
 # Logs
 *.log
 logs.txt
+
+# Database
+db/
+*.db

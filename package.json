@@ -27,6 +27,8 @@
 		"obsidian": "latest",
 		"mastra": "latest",
 		"@mastra/core": "latest",
+		"@mastra/memory": "latest",
+		"@mastra/libsql": "latest",
 		"@ai-sdk/google": "latest",
 		"@ai-sdk/openai": "latest",
 		"@ai-sdk/azure": "latest",

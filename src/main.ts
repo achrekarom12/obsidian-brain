@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Modal, Plugin, WorkspaceLeaf } from 'obsidian';
+import { Plugin, WorkspaceLeaf } from 'obsidian';
 import { DEFAULT_SETTINGS, BrainSettings, BrainSettingTab } from "./settings";
 import { BrainView, VIEW_TYPE_CHAT } from './view';
 import { Logger } from './logger';
@@ -116,21 +116,5 @@ export default class BrainPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-class BrainModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const { contentEl } = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const { contentEl } = this;
-		contentEl.empty();
 	}
 }

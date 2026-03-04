@@ -3,6 +3,28 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createAzure } from '@ai-sdk/azure';
 import { BrainSettings } from '../../settings';
+import type { Memory } from '@mastra/memory';
+
+// Static imports of memory modules removed to prevent load-time crashes in Obsidian
+// We use type-only imports to satisfy the linter without actually bundling the modules at the top level
+
+let memoryInstance: Memory | undefined;
+
+export async function getMemory() {
+    if (!memoryInstance) {
+        try {
+            // Dynamic import to defer loading until first use
+            const { Memory } = await import('@mastra/memory');
+            const { InMemoryStore } = await import('@mastra/core/storage');
+
+            const storage = new InMemoryStore();
+            memoryInstance = new Memory({ storage });
+        } catch (e) {
+            console.error('Failed to initialize Mastra memory:', e);
+        }
+    }
+    return memoryInstance;
+}
 
 export function getModel(settings: BrainSettings) {
     const { provider } = settings;
@@ -39,11 +61,13 @@ export function getModel(settings: BrainSettings) {
     return openai('gpt-4o');
 }
 
-export function createBrainAgent(settings: BrainSettings) {
+export async function createBrainAgent(settings: BrainSettings) {
+    const mem = await getMemory();
     return new Agent({
         id: 'brainy',
         name: 'Brainy',
         instructions: 'You are Brainy, a helpful assistant integrated into Obsidian. You help users manage their notes and answer questions.',
         model: getModel(settings),
+        memory: mem,
     });
 }
