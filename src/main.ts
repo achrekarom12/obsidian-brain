@@ -4,15 +4,24 @@ import { BrainView, VIEW_TYPE_CHAT } from './view';
 
 // Remember to rename these classes and interfaces!
 
+import { initLogger, getLogger } from "./logger";
+
 export default class BrainPlugin extends Plugin {
 	settings: BrainSettings;
 
 	async onload() {
+		const pluginDir = this.manifest.dir || '.obsidian/plugins/obsidian-brain';
+		initLogger(this.app, pluginDir);
+		const logger = getLogger();
+		await logger.log("Brain Plugin loading...");
+
 		await this.loadSettings();
+
+
 
 		this.registerView(
 			VIEW_TYPE_CHAT,
-			(leaf) => new BrainView(leaf)
+			(leaf) => new BrainView(leaf, this)
 		);
 
 		this.addRibbonIcon('brain', 'Brain', () => {

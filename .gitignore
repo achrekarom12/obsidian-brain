@@ -20,3 +20,14 @@ data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# ENV Files
+.env
+.env.local
+.env.example
+.env.test
+.env.test.local
+.env.dev
+.env.dev.local
+.env.prod
+.env.prod.local

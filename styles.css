@@ -93,3 +93,23 @@
     color: var(--text-normal);
     border-bottom-left-radius: 4px;
 }
+
+/* Ensuring error style overrides ai/user styles */
+.brain-chat-msg-wrap.error .brain-chat-msg-text,
+.brain-chat-msg-wrap.ai.error .brain-chat-msg-text,
+.brain-chat-msg-wrap.user.error .brain-chat-msg-text {
+    background-color: var(--background-secondary-alt) !important;
+    color: var(--text-error, #ff0000) !important;
+    border: 2px solid var(--text-error, #ff0000) !important;
+}
+
+/* Ensure the react mount and container fill the view */
+.brain-react-mount {
+    height: 100%;
+}
+
+.brain-chat-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}

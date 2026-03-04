@@ -22,9 +22,14 @@
 			"ES5",
 			"ES6",
 			"ES7"
+		],
+		"jsx": "react-jsx",
+		"types": [
+			"node"
 		]
 	},
 	"include": [
-		"src/**/*.ts"
+		"src/**/*.ts",
+		"src/**/*.tsx"
 	]
 }

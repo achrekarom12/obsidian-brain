@@ -1,0 +1,49 @@
+[2026-03-04 19:58:37] [INFO] User sent message:
+Data: "Heyy"
+[2026-03-04 19:58:37] [INFO] Creating Brain Agent
+Data: {
+  "provider": "OpenAI"
+}
+[2026-03-04 19:58:37] [INFO] Agent created
+Data: {
+  "agent": {
+    "component": "AGENT",
+    "logger": {
+      "name": "AGENT - undefined",
+      "level": "error",
+      "transports": {}
+    },
+    "name": "Brainy",
+    "id": "brainy",
+    "source": "code",
+    "model": {
+      "specificationVersion": "v3",
+      "supportedUrls": {
+        "image/*": [
+          {}
+        ],
+        "application/pdf": [
+          {}
+        ]
+      },
+      "modelId": "gpt-4o-mini",
+      "config": {
+        "provider": "openai.responses",
+        "fileIdPrefixes": [
+          "file-"
+        ]
+      }
+    },
+    "maxRetries": 0,
+    "_agentNetworkAppend": false
+  }
+}
+[2026-03-04 19:58:37] [ERROR] Mastra Agent Error:
+Data: {
+  "message": "Exhausted all fallback models and reached the maximum number of retries. Last error: Failed to execute 'pipeThrough' on 'ReadableStream': Failed to read the 'readable' property from 'ReadableWritablePair': Failed to convert value to 'ReadableStream'.",
+  "name": "Error",
+  "cause": {
+    "message": "Failed to execute 'pipeThrough' on 'ReadableStream': Failed to read the 'readable' property from 'ReadableWritablePair': Failed to convert value to 'ReadableStream'.",
+    "name": "TypeError"
+  }
+}
