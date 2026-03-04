@@ -48,10 +48,10 @@ export class BrainSettingTab extends PluginSettingTab {
 			.setName('Provider')
 			.setDesc('Choose your AI provider')
 			.addDropdown(dropdown => dropdown
-				.addOption('OpenAI', 'OpenAI')
+				.addOption('OpenAI', 'Openai')
 				.addOption('Google', 'Google')
-				.addOption('AzureOpenAI', 'Azure OpenAI')
-				.addOption('Custom', 'Custom (OpenAI Compatible)')
+				.addOption('AzureOpenAI', 'Azure openai')
+				.addOption('Custom', 'Custom')
 				.setValue(this.plugin.settings.provider)
 				.onChange(async (value: 'OpenAI' | 'Google' | 'AzureOpenAI' | 'Custom') => {
 					this.plugin.settings.provider = value;
@@ -61,11 +61,11 @@ export class BrainSettingTab extends PluginSettingTab {
 
 		if (this.plugin.settings.provider === 'OpenAI') {
 			new Setting(containerEl)
-				.setName('OpenAI API Key')
-				.setDesc('Enter your OpenAI API key.')
+				.setName('Openai API key')
+				.setDesc('Enter your API key')
 				.addText(text => {
 					text.inputEl.type = 'password';
-					text.setPlaceholder('sk-...')
+					text.setPlaceholder('Sk-..')
 						.setValue(this.plugin.settings.openaiApiKey)
 						.onChange(async (value) => {
 							this.plugin.settings.openaiApiKey = value;
@@ -75,12 +75,12 @@ export class BrainSettingTab extends PluginSettingTab {
 
 			new Setting(containerEl)
 				.setName('Model')
-				.setDesc('Select the OpenAI model to use.')
+				.setDesc('Select the openai model to use')
 				.addDropdown(dropdown => {
-					dropdown.addOption('gpt-4o', 'GPT-4o');
-					dropdown.addOption('gpt-4o-mini', 'GPT-4o-mini');
-					dropdown.addOption('gpt-4-turbo', 'GPT-4-turbo');
-					dropdown.addOption('gpt-3.5-turbo', 'GPT-3.5-turbo');
+					dropdown.addOption('gpt-4o', 'Gpt-4o');
+					dropdown.addOption('gpt-4o-mini', 'Gpt-4o-mini');
+					dropdown.addOption('gpt-4-turbo', 'Gpt-4-turbo');
+					dropdown.addOption('gpt-3.5-turbo', 'Gpt-3.5-turbo');
 					dropdown.setValue(this.plugin.settings.openaiModel)
 						.onChange(async (value) => {
 							this.plugin.settings.openaiModel = value;
@@ -89,8 +89,8 @@ export class BrainSettingTab extends PluginSettingTab {
 				})
 		} else if (this.plugin.settings.provider === 'Google') {
 			new Setting(containerEl)
-				.setName('Google API Key')
-				.setDesc('Enter your Gemini key.')
+				.setName('Google API key')
+				.setDesc('Enter your gemini key')
 				.addText(text => {
 					text.inputEl.type = 'password'; // protected
 					text.setPlaceholder('Enter key')
@@ -103,13 +103,13 @@ export class BrainSettingTab extends PluginSettingTab {
 
 			new Setting(containerEl)
 				.setName('Model')
-				.setDesc('Select the Google Gemini model.')
+				.setDesc('Select your gemini model')
 				.addDropdown(dropdown => {
-					dropdown.addOption('gemini-2.5-flash', 'Gemini 2.5 Flash');
-					dropdown.addOption('gemini-2.5-pro', 'Gemini 2.5 Pro');
-					dropdown.addOption('gemini-2.0-flash', 'Gemini 2.0 Flash');
-					dropdown.addOption('gemini-1.5-pro', 'Gemini 1.5 Pro');
-					dropdown.addOption('gemini-1.5-flash', 'Gemini 1.5 Flash');
+					dropdown.addOption('gemini-2.5-flash', 'Gemini 2.5 flash');
+					dropdown.addOption('gemini-2.5-pro', 'Gemini 2.5 pro');
+					dropdown.addOption('gemini-2.0-flash', 'Gemini 2.0 flash');
+					dropdown.addOption('gemini-1.5-pro', 'Gemini 1.5 pro');
+					dropdown.addOption('gemini-1.5-flash', 'Gemini 1.5 flash');
 					dropdown.setValue(this.plugin.settings.googleModel)
 						.onChange(async (value) => {
 							this.plugin.settings.googleModel = value;
@@ -118,10 +118,10 @@ export class BrainSettingTab extends PluginSettingTab {
 				});
 		} else if (this.plugin.settings.provider === 'AzureOpenAI') {
 			new Setting(containerEl)
-				.setName('Resource Name')
-				.setDesc('Enter your Azure OpenAI resource name.')
+				.setName('Resource name')
+				.setDesc('Enter your azure openai resource name')
 				.addText(text => text
-					.setPlaceholder('resource-name')
+					.setPlaceholder('Resource name')
 					.setValue(this.plugin.settings.azureResourceName)
 					.onChange(async (value) => {
 						this.plugin.settings.azureResourceName = value;
@@ -129,8 +129,8 @@ export class BrainSettingTab extends PluginSettingTab {
 					}));
 
 			new Setting(containerEl)
-				.setName('API Key')
-				.setDesc('Enter your Azure OpenAI API key.')
+				.setName('API key')
+				.setDesc('Enter your azure openai API key')
 				.addText(text => {
 					text.inputEl.type = 'password';
 					text.setPlaceholder('Enter key')
@@ -142,10 +142,10 @@ export class BrainSettingTab extends PluginSettingTab {
 				});
 
 			new Setting(containerEl)
-				.setName('Deployment Name')
-				.setDesc('Enter the deployment name for the model.')
+				.setName('Deployment name')
+				.setDesc('Enter the deployment name for the model')
 				.addText(text => text
-					.setPlaceholder('deployment-name')
+					.setPlaceholder('Deployment name')
 					.setValue(this.plugin.settings.azureDeploymentName)
 					.onChange(async (value) => {
 						this.plugin.settings.azureDeploymentName = value;
@@ -154,9 +154,9 @@ export class BrainSettingTab extends PluginSettingTab {
 		} else if (this.plugin.settings.provider === 'Custom') {
 			new Setting(containerEl)
 				.setName('Base URL')
-				.setDesc('Enter the base URL for the custom provider (e.g., https://api.together.xyz/v1).')
+				.setDesc('Enter the base URL for the custom provider (e.g., https://api.together.xyz/v1)')
 				.addText(text => text
-					.setPlaceholder('https://...')
+					.setPlaceholder('https://api.example.com')
 					.setValue(this.plugin.settings.customBaseUrl)
 					.onChange(async (value) => {
 						this.plugin.settings.customBaseUrl = value;
@@ -164,8 +164,8 @@ export class BrainSettingTab extends PluginSettingTab {
 					}));
 
 			new Setting(containerEl)
-				.setName('API Key')
-				.setDesc('Enter your API key for the custom provider.')
+				.setName('API key')
+				.setDesc('Enter your API key for the custom provider')
 				.addText(text => {
 					text.inputEl.type = 'password';
 					text.setPlaceholder('Enter key')
@@ -178,9 +178,9 @@ export class BrainSettingTab extends PluginSettingTab {
 
 			new Setting(containerEl)
 				.setName('Model')
-				.setDesc('Enter the model name (e.g., meta-llama/Llama-3-70b-chat-hf).')
+				.setDesc('Enter the model name (e.g., meta-llama/Llama-3-70b-chat-hf)')
 				.addText(text => text
-					.setPlaceholder('model-name')
+					.setPlaceholder('Model name')
 					.setValue(this.plugin.settings.customModel)
 					.onChange(async (value) => {
 						this.plugin.settings.customModel = value;
