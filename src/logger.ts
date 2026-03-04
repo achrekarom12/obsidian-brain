@@ -26,7 +26,6 @@ export class Logger {
 
     private static hook(level: keyof typeof Logger.originalConsole, args: unknown[]) {
         // Call original console
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         this.originalConsole[level](...(args));
 
         // Format message

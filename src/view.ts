@@ -6,6 +6,7 @@ export const VIEW_TYPE_CHAT = "brain-chat-view";
 
 export class BrainView extends ItemView {
     plugin: BrainPlugin;
+    chatHistory: HTMLDivElement;
 
     constructor(leaf: WorkspaceLeaf, plugin: BrainPlugin) {
         super(leaf);
@@ -29,9 +30,14 @@ export class BrainView extends ItemView {
         container.empty();
         container.addClass("brain-chat-container");
 
-        container.createEl("h2", { text: "Brainy" });
+        container.createEl("h2", { text: "Brainy", cls: "brain-chat-title" });
 
-        const chatHistory = container.createDiv({ cls: "brain-chat-history" });
+        this.chatHistory = container.createDiv({ cls: "brain-chat-history" });
+
+        this.addAction("plus-with-circle", "New Chat", () => {
+            this.clearHistory();
+        });
+
         const inputContainer = container.createDiv({ cls: "brain-chat-input-container" });
 
         const inputField = inputContainer.createEl("input", {
@@ -46,9 +52,9 @@ export class BrainView extends ItemView {
         });
 
         const appendMessage = (sender: "user" | "ai", text: string) => {
-            const msgWrap = chatHistory.createDiv({ cls: `brain-chat-msg-wrap ${sender}` });
+            const msgWrap = this.chatHistory.createDiv({ cls: `brain-chat-msg-wrap ${sender}` });
             const msgText = msgWrap.createDiv({ cls: "brain-chat-msg-text", text: text });
-            chatHistory.scrollTo(0, chatHistory.scrollHeight);
+            this.chatHistory.scrollTo(0, this.chatHistory.scrollHeight);
             return msgText;
         };
 
@@ -70,7 +76,7 @@ export class BrainView extends ItemView {
                     for await (const chunk of stream.textStream) {
                         fullText += chunk;
                         aiMsgText.setText(fullText);
-                        chatHistory.scrollTo(0, chatHistory.scrollHeight);
+                        this.chatHistory.scrollTo(0, this.chatHistory.scrollHeight);
                     }
                 } catch (error) {
                     console.error("Mastra error:", error);
@@ -91,5 +97,11 @@ export class BrainView extends ItemView {
 
     async onClose() {
         // Nothing to clean up
+    }
+
+    clearHistory() {
+        if (this.chatHistory) {
+            this.chatHistory.empty();
+        }
     }
 }

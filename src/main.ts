@@ -23,88 +23,91 @@ export default class BrainPlugin extends Plugin {
 
 		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
 		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status bar text');
+		statusBarItemEl.setText('Brain active');
 
-		// This adds a simple command that can be triggered anywhere
+		// Commands
 		this.addCommand({
 			id: 'open-brain-chat',
-			name: 'Open brain chat',
+			name: 'Open chat',
 			callback: () => {
 				void this.activateView();
 			}
 		});
 
-		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
-			id: 'open-modal-simple',
-			name: 'Open modal (simple)',
+			id: 'new-brain-chat',
+			name: 'New chat',
 			callback: () => {
-				new BrainModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'replace-selected',
-			name: 'Replace selected content',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				editor.replaceSelection('Sample editor command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-modal-complex',
-			name: 'Open modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new BrainModal(this.app).open();
+				const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_CHAT);
+				if (leaves.length > 0) {
+					const leaf = leaves[0];
+					if (leaf) {
+						const view = leaf.view as BrainView;
+						if (view.clearHistory) {
+							view.clearHistory();
+						}
 					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
 				}
-				return false;
+				void this.activateView();
 			}
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new BrainSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		// this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-		// 	new Notice("Click");
+		// this.addCommand({
+		// 	id: 'open-modal-simple',
+		// 	name: 'Open modal (simple)',
+		// 	callback: () => {
+		// 		new BrainModal(this.app).open();
+		// 	}
 		// });
 
+		// this.addCommand({
+		// 	id: 'replace-selected',
+		// 	name: 'Replace selected content',
+		// 	editorCallback: (editor: Editor) => {
+		// 		editor.replaceSelection('Sample editor command');
+		// 	}
+		// });
+
+		// this.addCommand({
+		// 	id: 'open-modal-complex',
+		// 	name: 'Open modal (complex)',
+		// 	checkCallback: (checking: boolean) => {
+		// 		const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+		// 		if (markdownView) {
+		// 			if (!checking) {
+		// 				new BrainModal(this.app).open();
+		// 			}
+		// 			return true;
+		// 		}
+		// 		return false;
+		// 	}
+		// });
+
+		this.addSettingTab(new BrainSettingTab(this.app, this));
 	}
 
 	async activateView() {
 		const { workspace } = this.app;
 
-		let leaf: WorkspaceLeaf | undefined;
+		let leaf: WorkspaceLeaf | null = null;
 		const leaves = workspace.getLeavesOfType(VIEW_TYPE_CHAT);
 
 		if (leaves.length > 0) {
-			// A leaf with our view already exists, use that
-			leaf = leaves[0];
+			leaf = leaves[0] as WorkspaceLeaf;
 		} else {
-			// Our view could not be found in the workspace, create a new leaf
-			// in the right sidebar
-			leaf = workspace.getRightLeaf(false) ?? undefined;
-			await leaf?.setViewState({ type: VIEW_TYPE_CHAT, active: true });
+			leaf = workspace.getRightLeaf(false);
+			if (leaf) {
+				await leaf.setViewState({ type: VIEW_TYPE_CHAT, active: true });
+			}
 		}
 
-		// "Reveal" the leaf in case it is in a collapsed sidebar
 		if (leaf) {
-			await this.app.workspace.revealLeaf(leaf);
+			await workspace.revealLeaf(leaf);
 		}
 	}
 
 	onunload() {
+		// Cleanup if necessary
 	}
 
 	async loadSettings() {
@@ -122,7 +125,7 @@ class BrainModal extends Modal {
 	}
 
 	onOpen() {
-		let { contentEl } = this;
+		const { contentEl } = this;
 		contentEl.setText('Woah!');
 	}
 

@@ -6,10 +6,18 @@
     background-color: var(--background-primary);
 }
 
+.brain-chat-title {
+    text-align: center;
+    margin: 16px 0;
+}
+
 .brain-chat-header {
     padding: 12px 16px;
     border-bottom: 1px solid var(--divider-color);
     background-color: var(--background-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .brain-chat-header h4 {
