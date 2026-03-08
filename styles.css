@@ -101,3 +101,41 @@
     color: var(--text-normal);
     border-bottom-left-radius: 4px;
 }
+
+/* Markdown styling in bubbles */
+.brain-chat-msg-text p:first-child {
+    margin-top: 0;
+}
+
+.brain-chat-msg-text p:last-child {
+    margin-bottom: 0;
+}
+
+.brain-chat-msg-text ul, .brain-chat-msg-text ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding-inline-start: 1.5em;
+}
+
+.brain-chat-msg-text code {
+    background-color: var(--background-primary);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: var(--font-monospace);
+}
+
+.brain-chat-msg-wrap.user .brain-chat-msg-text code {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-on-accent);
+}
+
+.brain-chat-msg-text pre {
+    margin: 0.5em 0;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: var(--background-primary);
+}
+
+.brain-chat-msg-wrap.user .brain-chat-msg-text pre {
+    background-color: rgba(0, 0, 0, 0.2);
+}

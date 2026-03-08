@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import { ItemView, WorkspaceLeaf, MarkdownRenderer } from "obsidian";
 import BrainPlugin from "./main";
 import { createBrainAgent } from "./mastra/agents";
 
@@ -53,9 +53,16 @@ export class BrainView extends ItemView {
             cls: "brain-chat-send-btn"
         });
 
-        const appendMessage = (sender: "user" | "ai", text: string) => {
+        const appendMessage = async (sender: "user" | "ai", text: string) => {
             const msgWrap = this.chatHistory.createDiv({ cls: `brain-chat-msg-wrap ${sender}` });
-            const msgText = msgWrap.createDiv({ cls: "brain-chat-msg-text", text: text });
+            const msgText = msgWrap.createDiv({ cls: "brain-chat-msg-text" });
+
+            if (text !== "...") {
+                await MarkdownRenderer.render(this.app, text, msgText, "", this);
+            } else {
+                msgText.setText(text);
+            }
+
             this.chatHistory.scrollTo(0, this.chatHistory.scrollHeight);
             return msgText;
         };
@@ -63,10 +70,9 @@ export class BrainView extends ItemView {
         const handleSend = async () => {
             const query = inputField.value.trim();
             if (query) {
-                appendMessage("user", query);
+                await appendMessage("user", query);
                 inputField.value = "";
-
-                const aiMsgText = appendMessage("ai", "...");
+                const aiMsgText = await appendMessage("ai", "...");
                 let fullText = "";
 
                 try {
@@ -82,7 +88,8 @@ export class BrainView extends ItemView {
 
                     for await (const chunk of stream.textStream) {
                         fullText += chunk;
-                        aiMsgText.setText(fullText);
+                        aiMsgText.empty();
+                        await MarkdownRenderer.render(this.app, fullText, aiMsgText, "", this);
                         this.chatHistory.scrollTo(0, this.chatHistory.scrollHeight);
                     }
                 } catch (error) {
