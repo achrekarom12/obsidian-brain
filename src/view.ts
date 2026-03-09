@@ -76,8 +76,9 @@ export class BrainView extends ItemView {
                 let fullText = "";
 
                 try {
-                    const agent = await createBrainAgent(this.plugin.settings);
+                    const agent = await createBrainAgent(this.plugin);
                     const stream = await agent.stream(query, {
+                        maxSteps: 5,
                         memory: {
                             thread: this.threadId,
                             resource: "obsidian-user",
@@ -86,10 +87,22 @@ export class BrainView extends ItemView {
 
                     aiMsgText.setText("");
 
-                    for await (const chunk of stream.textStream) {
-                        fullText += chunk;
-                        aiMsgText.empty();
-                        await MarkdownRenderer.render(this.app, fullText, aiMsgText, "", this);
+                    for await (const chunk of stream.fullStream) {
+                        console.log('Chunk type:', chunk.type);
+
+                        if (chunk.type === 'text-delta') {
+                            fullText += chunk.payload.text;
+                        } else if (chunk.type === 'tool-call') {
+                            const toolName = (chunk as any).payload.toolName;
+                            aiMsgText.createDiv({ cls: 'brain-chat-tool-call', text: `Calling ${toolName}` });
+                        } else if (chunk.type === 'tool-result') {
+                            // Optional: clear tool call message or show result
+                        }
+
+                        if (fullText) {
+                            aiMsgText.empty();
+                            await MarkdownRenderer.render(this.app, fullText, aiMsgText, "", this);
+                        }
                         this.chatHistory.scrollTo(0, this.chatHistory.scrollHeight);
                     }
                 } catch (error) {

@@ -61,13 +61,24 @@ export function getModel(settings: BrainSettings) {
     return openai('gpt-4o');
 }
 
-export async function createBrainAgent(settings: BrainSettings) {
+import { createVaultTools } from '../tools';
+import BrainPlugin from '../../main';
+
+export async function createBrainAgent(plugin: BrainPlugin) {
     const mem = await getMemory();
+    const vaultTools = createVaultTools(plugin.app);
+
     return new Agent({
         id: 'brainy',
         name: 'Brainy',
-        instructions: 'You are Brainy, a helpful assistant integrated into Obsidian. You help users manage their notes and answer questions.',
-        model: getModel(settings),
+        instructions: `You are Brainy, a helpful assistant integrated into Obsidian. 
+You have access to the user's notes through tools. 
+When asked about notes, use the appropriate tools to list, read, or search them. 
+Always try to provide context-aware answers based on the content of the notes.`,
+        model: getModel(plugin.settings),
         memory: mem,
+        tools: {
+            ...vaultTools
+        }
     });
 }

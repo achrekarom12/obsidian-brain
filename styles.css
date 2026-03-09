@@ -139,3 +139,13 @@
 .brain-chat-msg-wrap.user .brain-chat-msg-text pre {
     background-color: rgba(0, 0, 0, 0.2);
 }
+
+.brain-chat-tool-call {
+    font-size: 0.8em;
+    font-style: italic;
+    color: var(--text-muted);
+    margin: 4px 0;
+    padding: 4px 8px;
+    background-color: var(--background-primary-alt);
+    border-radius: 4px;
+}
