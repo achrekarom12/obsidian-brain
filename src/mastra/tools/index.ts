@@ -9,10 +9,10 @@ export const createVaultTools = (app: App) => {
             description: 'List all markdown notes in the Obsidian vault',
             inputSchema: z.object({}),
             execute: async () => {
-                console.log('Tool: list_notes called');
+                console.debug('Tool: list_notes called');
                 const files = app.vault.getMarkdownFiles();
-                console.log(`Tool: list_notes found ${files.length} notes`);
-                console.log(files.map(f => f.path));
+                console.debug(`Tool: list_notes found ${files.length} notes`);
+                console.debug(files.map(f => f.path));
                 return {
                     notes: files.map(f => f.path)
                 };
@@ -25,11 +25,11 @@ export const createVaultTools = (app: App) => {
                 path: z.string().describe('The full path of the note to read (e.g., "Folder/Note.md")'),
             }),
             execute: async ({ path }: { path: string }) => {
-                console.log(`Tool: read_note called with path: ${path}`);
+                console.debug(`Tool: read_note called with path: ${path}`);
                 const file = app.vault.getAbstractFileByPath(path);
                 if (file instanceof TFile) {
                     const content = await app.vault.read(file);
-                    console.log(`Tool: read_note successfully read ${path}`);
+                    console.debug(`Tool: read_note successfully read ${path}`);
                     return { content };
                 }
                 console.error(`Tool: read_note failed to find path: ${path}`);
@@ -43,7 +43,7 @@ export const createVaultTools = (app: App) => {
                 query: z.string().describe('The keyword to search for'),
             }),
             execute: async ({ query }: { query: string }) => {
-                console.log(`Tool: search_notes called with query: ${query}`);
+                console.debug(`Tool: search_notes called with query: ${query}`);
                 const files = app.vault.getMarkdownFiles();
                 const results = [];
 
@@ -58,7 +58,7 @@ export const createVaultTools = (app: App) => {
                     if (results.length >= 10) break;
                 }
 
-                console.log(`Tool: search_notes found ${results.length} results`);
+                console.debug(`Tool: search_notes found ${results.length} results`);
                 return { results };
             }
         }),
@@ -67,17 +67,17 @@ export const createVaultTools = (app: App) => {
             description: 'Get the content of the currently active note in Obsidian',
             inputSchema: z.object({}),
             execute: async () => {
-                console.log('Tool: get_active_note called');
+                console.debug('Tool: get_active_note called');
                 const activeFile = app.workspace.getActiveFile();
                 if (activeFile) {
                     const content = await app.vault.read(activeFile);
-                    console.log(`Tool: get_active_note reading active file: ${activeFile.path}`);
+                    console.debug(`Tool: get_active_note reading active file: ${activeFile.path}`);
                     return {
                         path: activeFile.path,
                         content: content
                     };
                 }
-                console.log('Tool: get_active_note - no active file found');
+                console.debug('Tool: get_active_note - no active file found');
                 return { error: 'No active file found' };
             }
         })

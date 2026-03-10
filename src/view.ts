@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf, MarkdownRenderer } from "obsidian";
+import { ItemView, WorkspaceLeaf, MarkdownRenderer, setIcon } from "obsidian";
 import BrainPlugin from "./main";
 import { createBrainAgent } from "./mastra/agents";
 
@@ -65,19 +65,31 @@ export class BrainView extends ItemView {
 
             if (sender === "ai") {
                 const footer = msgWrap.createDiv({ cls: "brain-chat-msg-footer" });
+
+                // Add timestamp
+                const now = new Date();
+                const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                footer.createDiv({ cls: "brain-chat-timestamp", text: timestamp });
+
                 const copyBtn = footer.createDiv({ cls: "brain-chat-copy-btn", title: "Copy response" });
-                copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+                setIcon(copyBtn, "copy");
 
                 copyBtn.addEventListener("click", () => {
                     const textContent = msgText.querySelector('.brain-chat-text-content');
                     const textToCopy = textContent ? (textContent as HTMLElement).innerText : msgText.innerText;
 
                     navigator.clipboard.writeText(textToCopy).then(() => {
-                        const oldHtml = copyBtn.innerHTML;
-                        copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-success)"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                        copyBtn.empty();
+                        setIcon(copyBtn, "check");
+                        copyBtn.addClass("success");
+
                         setTimeout(() => {
-                            copyBtn.innerHTML = oldHtml;
+                            copyBtn.removeClass("success");
+                            copyBtn.empty();
+                            setIcon(copyBtn, "copy");
                         }, 2000);
+                    }).catch(err => {
+                        console.error("Failed to copy text:", err);
                     });
                 });
             }
@@ -108,14 +120,14 @@ export class BrainView extends ItemView {
 
                     const toolBoxes = new Map<string, { container: HTMLDivElement, status: HTMLDivElement, content: HTMLDivElement }>();
 
-                    const createToolBox = (toolName: string, toolCallId: string, args: any) => {
+                    const createToolBox = (toolName: string, toolCallId: string, args: Record<string, unknown>) => {
                         const container = aiMsgText.createDiv({ cls: 'brain-chat-tool-container' });
                         const header = container.createDiv({ cls: 'brain-chat-tool-header' });
 
                         // Icon
                         const iconEl = header.createDiv({ cls: 'brain-chat-tool-icon' });
                         // Simple SVG wrench icon
-                        iconEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`;
+                        setIcon(iconEl, "wrench");
 
                         header.createDiv({ cls: 'brain-chat-tool-name', text: toolName });
 
@@ -124,7 +136,7 @@ export class BrainView extends ItemView {
                         status.createSpan({ text: 'Running' });
 
                         const expand = header.createDiv({ cls: 'brain-chat-tool-expand' });
-                        expand.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+                        setIcon(expand, "chevron-down");
 
                         const content = container.createDiv({ cls: 'brain-chat-tool-content' });
 
@@ -140,15 +152,16 @@ export class BrainView extends ItemView {
                     };
 
                     for await (const chunk of stream.fullStream) {
-                        console.log('Chunk type:', chunk.type, chunk);
+                        console.debug('Chunk type:', chunk.type, chunk);
 
                         if (chunk.type === 'text-delta') {
-                            fullText += chunk.payload.text;
+                            const payload = (chunk as { payload: { text: string } }).payload;
+                            fullText += payload.text;
                         } else if (chunk.type === 'tool-call') {
-                            const payload = (chunk as any).payload;
+                            const payload = (chunk as { payload: { toolName: string, toolCallId: string, args: Record<string, unknown> } }).payload;
                             createToolBox(payload.toolName, payload.toolCallId, payload.args);
                         } else if (chunk.type === 'tool-result') {
-                            const payload = (chunk as any).payload;
+                            const payload = (chunk as { payload: { toolCallId: string, result: unknown } }).payload;
                             const box = toolBoxes.get(payload.toolCallId);
                             if (box) {
                                 box.status.className = 'brain-chat-tool-status completed';

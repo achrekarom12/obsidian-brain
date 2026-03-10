@@ -328,6 +328,8 @@
 .brain-chat-msg-footer {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
     margin-top: 4px;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -337,12 +339,22 @@
     opacity: 1;
 }
 
+.brain-chat-timestamp {
+    font-size: 0.7em;
+    color: var(--text-muted);
+}
+
 .brain-chat-copy-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: 6px;
+    padding: 4px;
+    /* Reduced from 6px */
+    width: 24px;
+    /* Reduced size */
+    height: 24px;
+    /* Reduced size */
     border-radius: 4px;
     color: var(--text-muted);
     transition: all 0.2s ease;
@@ -355,4 +367,12 @@
 
 .brain-chat-copy-btn svg {
     display: block;
+    width: 14px;
+    /* Reduced from default */
+    height: 14px;
+    /* Reduced from default */
+}
+
+.brain-chat-copy-btn.success {
+    color: var(--text-success) !important;
 }
