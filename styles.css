@@ -323,3 +323,36 @@
     overflow-x: auto;
     line-height: 1.5;
 }
+
+/* Response Copy Button */
+.brain-chat-msg-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.brain-chat-msg-wrap.ai:hover .brain-chat-msg-footer {
+    opacity: 1;
+}
+
+.brain-chat-copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.brain-chat-copy-btn:hover {
+    color: var(--text-normal);
+    background-color: var(--background-secondary-alt);
+}
+
+.brain-chat-copy-btn svg {
+    display: block;
+}
