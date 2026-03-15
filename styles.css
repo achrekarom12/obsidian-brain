@@ -6,24 +6,52 @@
     background-color: var(--background-primary);
 }
 
-.brain-chat-title {
-    text-align: center;
-    margin: 16px 0;
-}
-
-.brain-chat-header {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--divider-color);
-    background-color: var(--background-secondary);
+.brain-chat-header-container {
+    padding: 24px 20px 20px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    background: var(--background-secondary);
+    border-bottom: 1px solid var(--divider-color);
 }
 
-.brain-chat-header h4 {
+.brain-chat-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brain-chat-header-icon {
+    display: flex;
+    color: var(--interactive-accent);
+    background: var(--background-primary);
+    padding: 8px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.theme-dark .brain-chat-header-icon {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.brain-chat-header-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.brain-chat-title {
     margin: 0;
-    font-size: 1.1em;
+    font-size: 1.4em;
     font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-normal);
+}
+
+.brain-chat-subtitle {
+    margin-top: 8px;
+    font-size: 0.85em;
+    color: var(--text-muted);
 }
 
 .brain-chat-history {
