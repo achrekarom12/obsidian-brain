@@ -33,10 +33,19 @@ export class BrainView extends ItemView {
         container.addClass("brain-chat-container");
 
         const headerContainer = container.createDiv({ cls: "brain-chat-header-container" });
-        const titleWrapper = headerContainer.createDiv({ cls: "brain-chat-title-wrapper" });
+        const headerTopContainer = headerContainer.createDiv({ cls: "brain-chat-header-top" });
+
+        const titleWrapper = headerTopContainer.createDiv({ cls: "brain-chat-title-wrapper" });
         const iconContainer = titleWrapper.createDiv({ cls: "brain-chat-header-icon" });
         setIcon(iconContainer, "brain");
         titleWrapper.createEl("h2", { text: "Brainy", cls: "brain-chat-title" });
+        
+        const newChatBtn = headerTopContainer.createDiv({ cls: "brain-chat-new-chat-btn", title: "New Chat" });
+        setIcon(newChatBtn, "plus");
+        newChatBtn.addEventListener("click", () => {
+            this.clearHistory();
+        });
+
         headerContainer.createDiv({ cls: "brain-chat-subtitle", text: "Your AI Assistant" });
 
         this.chatHistory = container.createDiv({ cls: "brain-chat-history" });
