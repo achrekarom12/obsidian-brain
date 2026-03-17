@@ -396,7 +396,7 @@
     transition: opacity 0.2s ease;
 }
 
-.brain-chat-msg-wrap.ai:hover .brain-chat-msg-footer {
+.brain-chat-msg-wrap:hover .brain-chat-msg-footer {
     opacity: 1;
 }
 

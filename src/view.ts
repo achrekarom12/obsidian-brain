@@ -77,36 +77,34 @@ export class BrainView extends ItemView {
                 msgText.setText(text);
             }
 
-            if (sender === "ai") {
-                const footer = msgWrap.createDiv({ cls: "brain-chat-msg-footer" });
+            const footer = msgWrap.createDiv({ cls: "brain-chat-msg-footer" });
 
-                // Add timestamp
-                const now = new Date();
-                const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                footer.createDiv({ cls: "brain-chat-timestamp", text: timestamp });
+            // Add timestamp
+            const now = new Date();
+            const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            footer.createDiv({ cls: "brain-chat-timestamp", text: timestamp });
 
-                const copyBtn = footer.createDiv({ cls: "brain-chat-copy-btn", title: "Copy response" });
-                setIcon(copyBtn, "copy");
+            const copyBtn = footer.createDiv({ cls: "brain-chat-copy-btn", title: sender === "ai" ? "Copy response" : "Copy message" });
+            setIcon(copyBtn, "copy");
 
-                copyBtn.addEventListener("click", () => {
-                    const textContent = msgText.querySelector('.brain-chat-text-content');
-                    const textToCopy = textContent ? (textContent as HTMLElement).innerText : msgText.innerText;
+            copyBtn.addEventListener("click", () => {
+                const textContent = msgText.querySelector('.brain-chat-text-content');
+                const textToCopy = textContent ? (textContent as HTMLElement).innerText : msgText.innerText;
 
-                    navigator.clipboard.writeText(textToCopy).then(() => {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    copyBtn.empty();
+                    setIcon(copyBtn, "check");
+                    copyBtn.addClass("success");
+
+                    setTimeout(() => {
+                        copyBtn.removeClass("success");
                         copyBtn.empty();
-                        setIcon(copyBtn, "check");
-                        copyBtn.addClass("success");
-
-                        setTimeout(() => {
-                            copyBtn.removeClass("success");
-                            copyBtn.empty();
-                            setIcon(copyBtn, "copy");
-                        }, 2000);
-                    }).catch(err => {
-                        console.error("Failed to copy text:", err);
-                    });
+                        setIcon(copyBtn, "copy");
+                    }, 2000);
+                }).catch(err => {
+                    console.error("Failed to copy text:", err);
                 });
-            }
+            });
 
             this.chatHistory.scrollTo(0, this.chatHistory.scrollHeight);
             return msgText;
