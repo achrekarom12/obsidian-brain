@@ -1,11 +1,11 @@
 {
 	"id": "obsidian-brain",
 	"name": "Obsidian Brain",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"minAppVersion": "0.15.0",
 	"description": "A plugin to help your Obsidian vault act like your second brain.",
 	"author": "Om Achrekar",
 	"authorUrl": "https://itsom.dev",
 	"fundingUrl": "https://itsom.dev",
-	"isDesktopOnly": false
+	"isDesktopOnly": true
 }
