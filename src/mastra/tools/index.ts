@@ -2,8 +2,18 @@ import { createTool } from '@mastra/core/tools';
 import { App, TFile } from 'obsidian';
 import { z } from 'zod';
 
+/**
+ * Creates and returns a set of Mastra tools that interact with the Obsidian vault.
+ * These tools allow agents to list, read, and search notes, as well as access the currently active note.
+ *
+ * @param app - The current Obsidian App instance used to interact with the workspace and vault.
+ * @returns An object containing the defined Mastra tools.
+ */
 export const createVaultTools = (app: App) => {
     return {
+        /**
+         * Tool to list all markdown notes present in the Obsidian vault.
+         */
         list_notes: createTool({
             id: 'list_notes',
             description: 'List all markdown notes in the Obsidian vault',
@@ -18,6 +28,9 @@ export const createVaultTools = (app: App) => {
                 };
             }
         }),
+        /**
+         * Tool to read the content of a specific note in the vault given its file path.
+         */
         read_note: createTool({
             id: 'read_note',
             description: 'Read the content of a specific note in the vault',
@@ -36,6 +49,9 @@ export const createVaultTools = (app: App) => {
                 return { error: `File not found at path: ${path}` };
             }
         }),
+        /**
+         * Tool to search across all vault markdown notes for a specific query string.
+         */
         search_notes: createTool({
             id: 'search_notes',
             description: 'Search for notes containing a specific keyword',
@@ -62,6 +78,9 @@ export const createVaultTools = (app: App) => {
                 return { results };
             }
         }),
+        /**
+         * Tool to fetch the content and file path of the currently active note in the editor.
+         */
         get_active_note: createTool({
             id: 'get_active_note',
             description: 'Get the content of the currently active note in Obsidian',
